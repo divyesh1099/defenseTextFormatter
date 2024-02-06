@@ -2,15 +2,21 @@
 
 Defense Text Formatter is a Django-based web application that leverages the power of AI to format plain text into structured, professional-looking software documentation. This tool is particularly useful for individuals and organizations looking to automate the formatting of their technical documents, ensuring a consistent and formal output suitable for official use.
 
+## Live Application
+
+A live version of the application is hosted at [Defense Text Formatter Live](https://defenseformattertool.pythonanywhere.com/). Try it out to experience the ease of automated document formatting.
+
+## Screenshots
+
+![image](https://github.com/divyesh1099/defenseTextFormatter/assets/65925922/217cc5b0-9522-4f42-b4c8-0f1dc2ee71e5)
+
+
 ## Features
 
 - **AI-Driven Formatting**: Utilizes an AI model to identify and apply formatting to different sections of text such as titles, headings, lists, and code snippets.
 - **Professional-Grade Documents**: Produces documents ready for professional use, with clear structure and readability.
 - **User-Friendly Interface**: Offers a straightforward web interface for text input and formatting, minimizing the need for manual editing.
 
-## Live Application
-
-A live version of the application is hosted at [Defense Text Formatter Live](https://defenseformattertool.pythonanywhere.com/). Try it out to experience the ease of automated document formatting.
 
 ## Local Setup
 
@@ -78,8 +84,11 @@ We welcome contributions to improve Defense Text Formatter. If you have suggesti
 
 ## Acknowledgements
 
+- Commander Ajit Sogarwal for the motivation. 
 - Thanks to all the contributors who have invested time in improving this tool.
+- Thanks to Google Gemini Pro for providing the API for it's LLM Model. 
 - Special thanks to the AI community for providing the resources needed for building this project.
+- Moti❤️
 
 ## License
 
