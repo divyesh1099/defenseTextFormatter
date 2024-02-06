@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-fog^@b-p+hsqa7qf%$#@&08mbksav=fgr+&)aevif3&6!cj8!w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
