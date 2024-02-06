@@ -1,0 +1,105 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form id="textForm" method="post">
+    <div class="container mx-auto px-4 py-8 bg-gray-800 min-h-screen">
+        <!-- CSRF Token -->
+        {% csrf_token %}
+        <div class="mb-8">
+            <label for="rawTextInput" class="block text-lg font-medium text-gray-300">Paste your text here</label>
+            <textarea name="text" id="rawTextInput" rows="10" class="mt-1 block w-full p-2.5 text-base text-gray-300 bg-gray-700 rounded-lg border border-gray-600 shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Enter text to be formatted..."></textarea>
+        </div>
+        <div class="mb-8">
+            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Format Text</button>
+        </div>
+    </div>
+</form>
+<div id="previewSection" class="container mx-auto px-4 py-8 {% if formatted_text|length > 0 %}{% else %}hidden{% endif %}">
+    <h2 class="text-lg font-medium text-gray-300 mb-4">Preview</h2>
+    <div class="bg-gray-700 p-4 rounded-lg shadow text-gray-300" id="formattedTextContainer">
+        {{ formatted_text|safe }}
+    </div>
+</div>
+<button id="downloadDocx" class="btn btn-primary">Download as DOCX</button>
+
+<script>
+ var localJsonData="";
+function convertJsonToHtml(jsonObject) {
+    let htmlContent = '';
+
+    for (const [section, content] of Object.entries(jsonObject)) {
+        htmlContent += `<h2>${section}</h2>`;
+        if (typeof content === 'object') {
+            for (const [subSection, subContent] of Object.entries(content)) {
+                htmlContent += `<h3>${subSection}</h3>`;
+                htmlContent += `<p>${subContent}</p>`;
+            }
+        } else {
+            // Handle the case where content is directly a string and not a nested object
+            htmlContent += `<p>${content}</p>`;
+        }
+    }
+
+    return htmlContent;
+}
+
+
+    document.getElementById('textForm').addEventListener('submit', function(e) {
+    e.preventDefault();  // Prevent the default form submission
+
+    const rawText = document.getElementById('rawTextInput').value;
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ text: rawText })
+    })
+    .then(response => response.json())  // Parse the JSON response
+    .then(data => {
+        // Assuming 'data' contains the 'formatted_text' key with your JSON string
+        const formattedTextContainer = document.getElementById('formattedTextContainer');
+        if (data.formatted_text) {
+            // The JSON string needs to be converted to an object to access its properties
+            const formattedObject = JSON.parse(data.formatted_text);
+            // Convert the JSON object to HTML (you need to implement this conversion)
+            formattedTextContainer.innerHTML = convertJsonToHtml(formattedObject);
+            document.getElementById('previewSection').classList.remove('hidden');
+            localJsonData = data.formatted_text;
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+
+document.getElementById('downloadDocx').addEventListener('click', function() {
+    const jsonData = localJsonData;
+    fetch('/download-docx/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ data: jsonData })
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        // Create a link element, use it to download the file and remove it
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'formatted_document.docx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+    </script>
+    
+{% endblock %}
